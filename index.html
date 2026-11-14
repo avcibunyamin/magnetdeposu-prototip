@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Magnet Deposu — Yeni tasarım prototipi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#121212}a:hover{color:#000000}
+button{font:inherit;cursor:pointer}
+.mbar{display:none}.cbadge{display:none}
+@media (max-width: 700px){.mbar{display:flex}.ctext{display:none}.cbadge{display:inline}.logo{font-size:26px!important}.cbtn{padding:0 14px!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<template id="tpl">
+<div style="font-family: Inter, system-ui, sans-serif; color: #121212; background: #F7F6F2; min-height: 100vh">
+
+  <header style="background: #FFFFFF">
+    <p style="margin: 0; background: #121212; color: #FFFFFF; text-align: center; font-size: 13px; font-weight: 600; padding: 7px 12px">3.000 TL üzeri siparişlerde <span style="color: #FFE14D">kargo bedava</span></p>
+    <div style="max-width: 1280px; margin: 0 auto; padding: 12px 16px 2px; display: flex; justify-content: center">
+      <button class="logo" onClick="{{goHome}}" aria-label="Magnet Deposu ana sayfa" style="white-space: nowrap; border: 0; background: none; padding: 0; color: #121212; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-weight: 800; font-size: 30px; letter-spacing: -0.02em">magnet<span style="background: #FFE14D; padding: 0 6px; border-radius: 6px; margin-left: 2px">deposu</span></button>
+    </div>
+  </header>
+  <div style="position: sticky; top: 0; z-index: 5; background: #FFFFFF; border-bottom: 1px solid #E6E4DD">
+    <div class="hrow" style="max-width: 1280px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 8px">
+      <button onClick="{{openMenu}}" aria-label="Kategoriler menüsünü aç" aria-expanded="{{menuExpanded}}" style="flex: none; height: 44px; min-width: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid #D6D3CA; background: #FFFFFF; color: #121212; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 14px">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+        <span class="ctext">Kategoriler</span>
+      </button>
+      <form role="search" style="flex: 1 1 auto; min-width: 0; display: flex">
+        <label for="p-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ürün ara</label>
+        <input id="p-search" type="search" placeholder="Ürün ara" style="flex: 1; min-width: 0; height: 44px; border: 1px solid #D6D3CA; border-radius: 999px; padding: 0 16px; font: inherit; font-size: 15px; background: #F7F6F2">
+      </form>
+      <button onClick="{{goAcc}}" aria-label="Hesabım" style="flex: none; width: 44px; height: 44px; border-radius: 999px; border: 1px solid #D6D3CA; background: #FFFFFF; color: #121212; display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 4-6 8-6s8 2 8 6"></path></svg>
+      </button>
+      <button class="cbtn" onClick="{{goCart}}" aria-label="Sepet" style="flex: none; white-space: nowrap; height: 44px; border-radius: 999px; display: flex; align-items: center; gap: 8px; padding: 0 16px; background: #121212; color: #FFE14D; border: 0; font-weight: 600; font-size: 14px">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.5 12h-11z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg>
+        <span class="ctext">Sepet · {{cartCount}}</span><span class="cbadge">{{cartCount}}</span>
+      </button>
+    </div>
+  </div>
+
+  <sc-if value="{{menuOpen}}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 20; display: flex">
+      <nav aria-label="Kategoriler" style="width: min(340px, 86vw); height: 100%; background: #FFFFFF; overflow-y: auto; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 2px; box-shadow: 8px 0 24px rgba(0,0,0,.18)">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px">magnet<span style="background: #FFE14D; padding: 0 5px; border-radius: 6px; margin-left: 2px">deposu</span></span>
+          <button onClick="{{closeMenu}}" aria-label="Menüyü kapat" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid #D6D3CA; background: #FFFFFF; color: #121212; display: flex; align-items: center; justify-content: center">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>
+        </div>
+        <p style="margin: 6px 4px; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #555">Kategoriler</p>
+        <sc-for list="{{menuCats}}" as="c" hint-placeholder-count="11">
+          <button onClick="{{c.open}}" style="display: flex; align-items: center; gap: 12px; border: 0; border-radius: 14px; background: none; padding: 6px 4px; min-height: 60px; text-align: left; color: #121212">
+            <img src="{{c.img}}" alt="" style="flex: none; width: 42px; height: 56px; object-fit: cover; border-radius: 10px; background: #F7F6F2">
+            <span style="flex: 1; font-weight: 600; font-size: 15px">{{c.name}}</span>
+            <span style="font-size: 13px; color: #555">{{c.count}}</span>
+          </button>
+        </sc-for>
+        <div style="border-top: 1px solid #E6E4DD; margin-top: 10px; padding-top: 10px; display: flex; flex-direction: column; gap: 2px">
+          <button onClick="{{goAcc}}" style="border: 0; background: none; text-align: left; min-height: 48px; padding: 0 4px; font-weight: 600; font-size: 15px; color: #121212">Hesabım</button>
+          <button onClick="{{goCart}}" style="border: 0; background: none; text-align: left; min-height: 48px; padding: 0 4px; font-weight: 600; font-size: 15px; color: #121212">Sepet</button>
+        </div>
+      </nav>
+      <button onClick="{{closeMenu}}" aria-label="Menüyü kapat" style="flex: 1; border: 0; background: rgba(18,18,18,.5)"></button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: fixed; left: 50%; transform: translateX(-50%); bottom: 88px; z-index: 9; background: #121212; color: #FFFFFF; border-radius: 999px; padding: 10px 10px 10px 20px; display: flex; align-items: center; gap: 12px; font-size: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.18); max-width: calc(100% - 32px)">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFE14D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>
+      <span style="white-space: nowrap; margin-left: -4px">{{toastText}}</span>
+      <button onClick="{{goCart}}" style="border: 0; background: #FFE14D; color: #121212; border-radius: 999px; height: 36px; padding: 0 14px; font-weight: 700; font-size: 13px">Sepete git</button>
+    </div>
+  </sc-if>
+
+  <!-- ANA SAYFA -->
+  <sc-if value="{{isHome}}" hint-placeholder-val="{{ true }}">
+    <main>
+      <section aria-labelledby="urunlerimiz" style="max-width: 1280px; margin: 0 auto; padding: 18px 0 6px">
+        <h2 id="urunlerimiz" style="margin: 0 16px 12px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 800">Ürünlerimiz</h2>
+        <div ref="{{setRingEl}}" onPointerDown="{{stopRing}}" onTouchStart="{{stopRing}}" onWheel="{{stopRing}}" onMouseEnter="{{pauseRing}}" onMouseLeave="{{playRing}}" style="display: flex; gap: 12px; overflow-x: auto; padding: 0 16px 6px; scrollbar-width: none">
+          <sc-for list="{{ring}}" as="c" hint-placeholder-count="8">
+            <button onClick="{{c.open}}" style="flex: none; width: 84px; border: 0; background: none; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; color: #121212; text-align: center">
+              <span style="width: 78px; height: 78px; border-radius: 50%; padding: 3px; background: #FFE14D; box-sizing: border-box; display: block">
+                <img src="{{c.img}}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 3px solid #FFFFFF; box-sizing: border-box; display: block">
+              </span>
+              <span style="font-size: 12px; font-weight: 600; line-height: 1.2">{{c.name}}</span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+      <section id="kategoriler" style="max-width: 1280px; margin: 0 auto; padding: 16px 16px 44px">
+        <h2 style="margin: 0 0 14px; font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(26px, 4vw, 36px); font-weight: 800; letter-spacing: -0.02em">Kategoriler</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px">
+          <sc-for list="{{homeCats}}" as="c" hint-placeholder-count="11">
+            <button onClick="{{c.open}}" style="position: relative; display: block; padding: 0; border: 0; background: #fff; border-radius: 22px; overflow: hidden; color: #121212; text-align: left">
+              <img src="{{c.img}}" alt="" style="width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block">
+              <span style="position: absolute; left: 8px; right: 8px; bottom: 8px; background: rgba(255,255,255,.94); border-radius: 14px; padding: 9px 12px; display: flex; justify-content: space-between; align-items: center; gap: 6px"><strong style="font-size: 14px; line-height: 1.2">{{c.name}}</strong><span style="font-size: 12px; color: #555">{{c.count}}</span></span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+
+      <section style="max-width: 1280px; margin: 0 auto; padding: 0 16px 44px">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px">
+          <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(26px, 4vw, 36px); font-weight: 800; letter-spacing: -0.02em">Çok satanlar</h2>
+        </div>
+        <div role="tablist" aria-label="Kategori" style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 14px">
+          <sc-for list="{{tabs}}" as="t" hint-placeholder-count="6">
+            <button role="tab" aria-selected="{{t.selected}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+          </sc-for>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 14px">
+          <sc-for list="{{best}}" as="p" hint-placeholder-count="4">
+            <article style="display: flex; flex-direction: column; gap: 8px">
+              <button onClick="{{p.open}}" style="display: block; border: 0; background: #fff; border-radius: 22px; padding: 8px"><img src="{{p.img}}" alt="{{p.name}}" style="width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 16px; display: block"></button>
+              <button onClick="{{p.open}}" style="border: 0; background: none; padding: 0 4px; text-align: left; color: #121212; font-weight: 500; font-size: 14px; line-height: 1.35">{{p.name}}</button>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px; margin-top: auto">
+                <strong style="font-size: 18px">{{p.priceText}}</strong>
+                <button onClick="{{p.add}}" aria-label="{{p.aria}}" style="flex: none; width: 44px; height: 44px; border: 0; border-radius: 999px; background: #121212; color: #FFE14D; font-size: 22px">+</button>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+        <button onClick="{{tabAll}}" style="margin-top: 14px; width: 100%; min-height: 48px; border-radius: 999px; border: 1px solid #D6D3CA; background: #fff; font-weight: 600; font-size: 14px; color: #121212">{{tabAllText}}</button>
+      </section>
+
+      <section id="temel" style="max-width: 1280px; margin: 0 auto; padding: 0 16px 44px">
+        <div style="background: #121212; color: #F7F6F2; border-radius: 28px; padding: clamp(20px, 4vw, 44px)">
+          <p style="margin: 0 0 6px; color: #FFE14D; font-weight: 700; font-size: 13px">Temel malzemeler</p>
+          <h2 style="margin: 0 0 18px; font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(24px, 4vw, 40px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.08">Magnet yapmak için 4 temel malzeme</h2>
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(8px, 2vw, 16px)">
+            <sc-for list="{{parts}}" as="p" hint-placeholder-count="4">
+              <button onClick="{{p.open}}" style="border: 0; background: none; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #F7F6F2; text-align: center">
+                <img src="{{p.img}}" alt="" style="width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 14px; display: block">
+                <span style="display: flex; flex-direction: column; gap: 2px"><span style="color: #FFE14D; font-size: 11px; font-weight: 700">{{p.n}}</span><strong style="font-size: clamp(12px, 1.6vw, 16px)">{{p.name}}</strong><span style="font-size: 11px; line-height: 1.3; color: #BDB8AD">{{p.sub}}</span></span>
+              </button>
+            </sc-for>
+          </div>
+          <p style="margin: 16px 0 0; font-size: 14px; color: #d6d1c6">Her magnet sayfasında diğer malzemeleri tek tıkla sepete ekleyebilirsiniz.</p>
+        </div>
+      </section>
+
+      <section style="max-width: 1280px; margin: 0 auto; padding: 0 16px 44px">
+        <div style="background: #FFE14D; color: #121212; border-radius: 28px; padding: clamp(22px, 4vw, 48px); display: flex; flex-direction: column; align-items: flex-start; gap: 10px">
+          <p style="margin: 0; font-weight: 700; font-size: 13px">Kampanyalı toptan ürünler</p>
+          <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(24px, 4vw, 38px); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em">Paket büyüdükçe adet fiyatı düşer.</h2>
+          <p style="margin: 0 0 8px; font-size: 15px; max-width: 460px">500'lü paketlerde %5, 1000'li paketlerde %10 indirim.</p>
+          <button onClick="{{goCat1000}}" style="min-height: 50px; padding: 0 22px; border: 0; border-radius: 999px; background: #121212; color: #FFE14D; font-weight: 600; font-size: 15px">Toptan paketleri incele</button>
+        </div>
+      </section>
+      <section style="max-width: 1280px; margin: 0 auto; padding: 0 16px 44px">
+        <h2 style="margin: 0 0 6px; font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(26px, 4vw, 36px); font-weight: 800; letter-spacing: -0.02em">Kasnağınıza uygun şeffaf pleksi</h2>
+        <p style="margin: 0 0 16px; font-size: 15px; color: #4b524f">Kasnağı alırken aynı şekildeki şeffaf pleksiyi de ekleyin.</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 10px">
+          <sc-for list="{{pairs}}" as="p" hint-placeholder-count="5">
+            <div style="background: #fff; border: 1px solid #E6E4DD; border-radius: 20px; padding: 10px; display: flex; align-items: center; gap: 8px">
+              <img src="{{p.kImg}}" alt="{{p.kasnak}}" style="flex: none; width: 60px; height: 80px; object-fit: cover; border-radius: 12px">
+              <span aria-hidden="true" style="font-weight: 800">+</span>
+              <img src="{{p.mImg}}" alt="{{p.magnet}}" style="flex: none; width: 60px; height: 80px; object-fit: cover; border-radius: 12px">
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                <strong style="font-size: 14px; line-height: 1.25">{{p.kasnak}}</strong>
+                <span style="font-size: 13px; color: #4b524f; line-height: 1.25">+ {{p.magnet}}</span>
+                <span style="font-size: 15px; font-weight: 800">{{p.total}}</span>
+              </span>
+              <button onClick="{{p.add}}" aria-label="{{p.aria}}" style="flex: none; width: 44px; height: 44px; border: 0; border-radius: 999px; background: #121212; color: #FFE14D; font-size: 22px">+</button>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section style="max-width: 1280px; margin: 0 auto; padding: 0 0 40px">
+        <h2 style="margin: 0 16px 6px; font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(26px, 4vw, 36px); font-weight: 800; letter-spacing: -0.02em">Yüzey seçenekleri</h2>
+        <p style="margin: 0 16px 14px; font-size: 15px; color: #4b524f">Klasik şeffaftan altın çerçeveli ve aynalı pleksiye.</p>
+        <div style="display: flex; gap: 10px; overflow-x: auto; padding: 0 16px 4px">
+          <sc-for list="{{finishes}}" as="f" hint-placeholder-count="5">
+            <button onClick="{{goCat}}" style="flex: none; width: 150px; display: flex; flex-direction: column; padding: 0; background: #fff; border: 1px solid #E6E4DD; border-radius: 18px; overflow: hidden; color: #121212; text-align: left">
+              <img src="{{f.img}}" alt="" style="width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block">
+              <span style="padding: 9px 11px; display: flex; flex-direction: column"><strong style="font-size: 14px">{{f.name}}</strong><span style="font-size: 12px; color: #555">{{f.note}}</span></span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+
+    </main>
+  </sc-if>
+
+  <!-- KATEGORİ -->
+  <sc-if value="{{isCat}}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 1280px; margin: 0 auto; padding: 24px 20px 64px; display: flex; flex-direction: column; gap: 20px">
+      <nav aria-label="Konum" style="font-size: 14px; color: #555; display: flex; gap: 8px; flex-wrap: wrap">
+        <button onClick="{{goHome}}" style="border: 0; background: none; padding: 0; color: #121212; text-decoration: underline; font-size: 14px">Ana sayfa</button><span aria-hidden="true">›</span><span>Magnet</span>
+      </nav>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end; justify-content: space-between">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 40px; letter-spacing: -0.02em">Magnet</h1>
+          <p style="margin: 0; color: #555; font-size: 15px">Paket büyüdükçe adet fiyatı düşer.</p>
+        </div>
+        <div role="group" aria-label="Paket boyutu" style="display: flex; gap: 8px; flex-wrap: wrap">
+          <sc-for list="{{filters}}" as="f" hint-placeholder-count="3">
+            <button onClick="{{f.pick}}" aria-pressed="{{f.active}}" style="{{f.style}}">{{f.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px">
+        <sc-for list="{{catCards}}" as="p" hint-placeholder-count="6">
+          <article style="background: #FFFFFF; border: 1px solid #E6E4DD; border-radius: 22px; padding: 10px 10px 14px; display: flex; flex-direction: column; gap: 10px">
+            <button onClick="{{p.open}}" style="border: 0; padding: 0; background: none; position: relative; display: block">
+              <img src="{{p.img}}" alt="{{p.name}}" style="width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 16px; background: #F7F6F2; display: block">
+              <sc-if value="{{p.hasDisc}}" hint-placeholder-val="{{ false }}">
+                <span style="position: absolute; top: 10px; left: 10px; background: #121212; color: #FFE14D; border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 700">{{p.discText}}</span>
+              </sc-if>
+            </button>
+            <div style="padding: 0 4px; display: flex; flex-direction: column; gap: 6px; flex: 1">
+              <button onClick="{{p.open}}" style="border: 0; padding: 0; background: none; text-align: left; font-weight: 600; font-size: 15px; line-height: 1.35; color: #121212">{{p.title}}</button>
+              <div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-top: auto">
+                <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px">{{p.priceText}}</span>
+                <sc-if value="{{p.hasReg}}" hint-placeholder-val="{{ false }}"><s style="color: #6b6b6b; font-size: 14px">{{p.regText}}</s></sc-if>
+              </div>
+              <span style="font-size: 13px; color: #555">Adet başı {{p.unitText}}</span>
+            </div>
+            <button onClick="{{p.add}}" style="height: 44px; border: 0; border-radius: 999px; background: #121212; color: #FFFFFF; font-weight: 600; font-size: 14px">Sepete ekle</button>
+          </article>
+        </sc-for>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- ÜRÜN -->
+  <sc-if value="{{isProd}}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 1280px; margin: 0 auto; padding: 24px 20px 120px; display: flex; flex-direction: column; gap: 40px">
+      <nav aria-label="Konum" style="font-size: 14px; color: #555; display: flex; gap: 8px; flex-wrap: wrap">
+        <button onClick="{{goHome}}" style="border: 0; background: none; padding: 0; color: #121212; text-decoration: underline; font-size: 14px">Ana sayfa</button><span aria-hidden="true">›</span>
+        <button onClick="{{goCat}}" style="border: 0; background: none; padding: 0; color: #121212; text-decoration: underline; font-size: 14px">Magnet</button><span aria-hidden="true">›</span><span>{{prod.name}}</span>
+      </nav>
+      <section style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+        <div style="flex: 1 1 480px; min-width: 0; position: relative">
+          <img src="{{prod.img}}" alt="{{prod.name}}" style="width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 28px; background: #FFFFFF; display: block">
+          <sc-if value="{{prod.hasDisc}}" hint-placeholder-val="{{ false }}">
+            <span style="position: absolute; top: 16px; left: 16px; background: #FFE14D; color: #121212; border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 800">{{prod.discText}}</span>
+          </sc-if>
+        </div>
+        <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+          <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.08; letter-spacing: -0.02em">{{prod.title}}</h1>
+          <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap">
+            <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 40px">{{prod.priceText}}</span>
+            <sc-if value="{{prod.hasReg}}" hint-placeholder-val="{{ false }}"><s style="color: #6b6b6b; font-size: 18px">{{prod.regText}}</s></sc-if>
+            <span style="font-size: 15px; color: #555">Adet başı {{prod.unitText}}</span>
+          </div>
+          <sc-if value="{{prod.hasSave}}" hint-placeholder-val="{{ false }}">
+            <p style="margin: 0; background: #FFF6C7; border-radius: 14px; padding: 12px 16px; font-size: 15px; font-weight: 600">{{prod.saveText}}</p>
+          </sc-if>
+          <sc-if value="{{prod.freeShip}}" hint-placeholder-val="{{ false }}">
+            <p style="margin: 0; background: #121212; color: #FFE14D; border-radius: 14px; padding: 12px 16px; font-size: 15px; font-weight: 700">Bu paketle kargo bedava</p>
+          </sc-if>
+
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <span style="font-weight: 700; font-size: 15px">Paket boyutu</span>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+              <sc-for list="{{packs}}" as="k" hint-placeholder-count="3">
+                <button onClick="{{k.pick}}" aria-pressed="{{k.active}}" style="{{k.style}}">
+                  <span style="font-weight: 800; font-size: 16px">{{k.label}}</span>
+                  <span style="font-size: 14px">{{k.priceText}}</span>
+                  <span style="font-size: 12px; opacity: .8">{{k.unitText}} / adet</span>
+                  <sc-if value="{{k.hasDisc}}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 800">{{k.discText}}</span></sc-if>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; flex-wrap: wrap">
+            <div style="display: flex; align-items: center; border: 1px solid #D6D3CA; border-radius: 999px; background: #FFFFFF; height: 52px">
+              <button onClick="{{decQty}}" aria-label="Azalt" style="width: 48px; height: 52px; border: 0; background: none; font-size: 20px">−</button>
+              <span style="min-width: 28px; text-align: center; font-weight: 700">{{pqty}}</span>
+              <button onClick="{{incQty}}" aria-label="Arttır" style="width: 48px; height: 52px; border: 0; background: none; font-size: 20px">+</button>
+            </div>
+            <button onClick="{{addProd}}" style="flex: 1 1 200px; height: 52px; border: 0; border-radius: 999px; background: #121212; color: #FFE14D; font-weight: 700; font-size: 16px">Sepete ekle · {{prod.lineText}}</button>
+          </div>
+
+          <dl style="margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 20px; font-size: 14px; border-top: 1px solid #E6E4DD; padding-top: 16px">
+            <dt style="color: #555">Malzeme</dt><dd style="margin: 0">Şeffaf pleksi, çift taraflı jelatinli</dd>
+            <dt style="color: #555">Kalınlık</dt><dd style="margin: 0">2 mm</dd>
+            <dt style="color: #555">Paket</dt><dd style="margin: 0">{{prod.qtyText}}</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 14px">
+        <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px">Bununla birlikte alınır</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px">
+          <sc-for list="{{extras}}" as="x" hint-placeholder-count="4">
+            <div style="background: #FFFFFF; border: 1px solid #E6E4DD; border-radius: 20px; padding: 10px; display: flex; gap: 12px; align-items: center">
+              <img src="{{x.img}}" alt="" style="width: 72px; height: 72px; object-fit: cover; border-radius: 14px; background: #F7F6F2; flex: none">
+              <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1">
+                <span style="font-size: 14px; font-weight: 600; line-height: 1.3">{{x.name}}</span>
+                <span style="font-weight: 800">{{x.priceText}}</span>
+              </div>
+              <button onClick="{{x.add}}" aria-label="{{x.aria}}" style="width: 44px; height: 44px; flex: none; border-radius: 999px; border: 0; background: #FFE14D; color: #121212; font-size: 22px; font-weight: 700">+</button>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <div class="mbar" style="position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: #FFFFFF; border-top: 1px solid #E6E4DD; padding: 10px 16px; align-items: center; gap: 12px">
+        <div style="display: flex; flex-direction: column">
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 20px">{{prod.priceText}}</span>
+          <span style="font-size: 12px; color: #555">{{prod.qtyText}}</span>
+        </div>
+        <button onClick="{{addProd}}" style="flex: 1; height: 48px; border: 0; border-radius: 999px; background: #121212; color: #FFE14D; font-weight: 700; font-size: 15px">Sepete ekle</button>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- İSİM -->
+  <sc-if value="{{isIsim}}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 1280px; margin: 0 auto; padding: 24px 20px 64px; display: flex; flex-direction: column; gap: 24px">
+      <nav aria-label="Konum" style="font-size: 14px; color: #555; display: flex; gap: 8px; flex-wrap: wrap">
+        <button onClick="{{goHome}}" style="border: 0; background: none; padding: 0; color: #121212; text-decoration: underline; font-size: 14px">Ana sayfa</button><span aria-hidden="true">›</span><span>İsim</span>
+      </nav>
+      <section style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+        <div style="flex: 1 1 440px; min-width: 0; background: #121212; border-radius: 28px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box">
+          <div style="width: 72%; aspect-ratio: 1; border-radius: 50%; border: 2px solid rgba(255,255,255,.35); background: rgba(255,255,255,.06); display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box">
+            <span style="{{isimPreviewStyle}}">{{inameShown}}</span>
+          </div>
+        </div>
+        <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+          <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.08; letter-spacing: -0.02em">Magnete Uygun İsim</h1>
+          <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap">
+            <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 40px">{{isim.priceText}}</span>
+            <sc-if value="{{isim.hasReg}}" hint-placeholder-val="{{ false }}"><s style="color: #6b6b6b; font-size: 18px">{{isim.regText}}</s></sc-if>
+            <span style="font-size: 15px; color: #555">{{isim.qtyText}} · adet başı {{isim.unitText}}</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <label for="isim-gir" style="font-weight: 700; font-size: 15px">Yazılacak isim</label>
+            <input id="isim-gir" type="text" maxlength="24" value="{{iname}}" onChange="{{onName}}" placeholder="Örn. Elif" style="height: 52px; border: 1px solid #D6D3CA; border-radius: 14px; padding: 0 16px; font: inherit; font-size: 17px; background: #FFFFFF">
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <span style="font-weight: 700; font-size: 15px">Renk: {{renkLabel}}</span>
+            <div role="group" aria-label="Renk" style="display: flex; gap: 8px; flex-wrap: wrap">
+              <sc-for list="{{renkler}}" as="r" hint-placeholder-count="5">
+                <button onClick="{{r.pick}}" aria-pressed="{{r.active}}" style="{{r.style}}">
+                  <span aria-hidden="true" style="{{r.dot}}"></span>{{r.label}}
+                </button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <span style="font-weight: 700; font-size: 15px">Kelime sayısı</span>
+            <div role="group" aria-label="Kelime sayısı" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+              <sc-for list="{{kelimeler}}" as="w" hint-placeholder-count="3">
+                <button onClick="{{w.pick}}" aria-pressed="{{w.active}}" style="{{w.style}}">
+                  <span style="font-weight: 700">{{w.label}}</span>
+                  <span style="font-size: 12px; opacity: .8">{{w.sub}}</span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <span style="font-weight: 700; font-size: 15px">Paket</span>
+            <div role="group" aria-label="Paket" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+              <sc-for list="{{ipacks}}" as="k" hint-placeholder-count="3">
+                <button onClick="{{k.pick}}" aria-pressed="{{k.active}}" style="{{k.style}}">
+                  <span style="font-weight: 800; font-size: 16px">{{k.label}}</span>
+                  <span style="font-size: 14px">{{k.priceText}}</span>
+                  <sc-if value="{{k.hasDisc}}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 800">{{k.discText}}</span></sc-if>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+
+          <button onClick="{{addIsim}}" style="height: 52px; border: 0; border-radius: 999px; background: #121212; color: #FFE14D; font-weight: 700; font-size: 16px">Sepete ekle · {{isim.priceText}}</button>
+        </div>
+      </section>
+    </main>
+  </sc-if>
+
+  <!-- HESABIM -->
+  <sc-if value="{{isAcc}}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 1100px; margin: 0 auto; padding: 24px 20px 64px; display: flex; flex-direction: column; gap: 20px">
+      <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 40px; letter-spacing: -0.02em">Hesabım</h1>
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start">
+        <form style="flex: 1 1 320px; background: #FFFFFF; border: 1px solid #E6E4DD; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+          <h2 style="margin: 0 0 4px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 24px">Giriş yap</h2>
+          <label for="acc-mail" style="font-weight: 600; font-size: 14px">E-posta</label>
+          <input id="acc-mail" type="email" autocomplete="email" style="height: 48px; border: 1px solid #D6D3CA; border-radius: 14px; padding: 0 14px; font: inherit; background: #F7F6F2">
+          <label for="acc-pass" style="font-weight: 600; font-size: 14px">Şifre</label>
+          <input id="acc-pass" type="password" autocomplete="current-password" style="height: 48px; border: 1px solid #D6D3CA; border-radius: 14px; padding: 0 14px; font: inherit; background: #F7F6F2">
+          <button type="button" style="margin-top: 6px; height: 50px; border: 0; border-radius: 999px; background: #121212; color: #FFE14D; font-weight: 700; font-size: 16px">Giriş yap</button>
+          <a href="#" style="font-size: 14px">Şifremi unuttum</a>
+        </form>
+        <div style="flex: 1 1 320px; background: #FFE14D; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+          <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 24px">Yeni misiniz?</h2>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5">Üye olun; siparişlerinizi takip edin, adresinizi bir kez girin.</p>
+          <button type="button" style="height: 50px; border: 0; border-radius: 999px; background: #121212; color: #FFFFFF; font-weight: 700; font-size: 16px">Üye ol</button>
+        </div>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- SEPET -->
+  <sc-if value="{{isCart}}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 1100px; margin: 0 auto; padding: 24px 20px 64px; display: flex; flex-direction: column; gap: 20px">
+      <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 40px; letter-spacing: -0.02em">Sepet</h1>
+      <sc-if value="{{isEmpty}}" hint-placeholder-val="{{ false }}">
+        <div style="background: #FFFFFF; border: 1px solid #E6E4DD; border-radius: 22px; padding: 32px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start">
+          <p style="margin: 0; font-size: 17px">Sepetiniz boş.</p>
+          <button onClick="{{goCat}}" style="height: 48px; border: 0; border-radius: 999px; padding: 0 22px; background: #121212; color: #FFE14D; font-weight: 700">Magnetlere göz at</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{hasItems}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+          <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+            <sc-for list="{{lines}}" as="l" hint-placeholder-count="2">
+              <div style="background: #FFFFFF; border: 1px solid #E6E4DD; border-radius: 20px; padding: 12px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap">
+                <img src="{{l.img}}" alt="" style="width: 76px; height: 76px; object-fit: cover; border-radius: 14px; background: #F7F6F2; flex: none">
+                <div style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+                  <span style="font-weight: 600; font-size: 15px; line-height: 1.3">{{l.name}}</span>
+                  <span style="font-size: 13px; color: #555">{{l.sub}}</span>
+                </div>
+                <div style="display: flex; align-items: center; border: 1px solid #D6D3CA; border-radius: 999px; height: 44px">
+                  <button onClick="{{l.dec}}" aria-label="Azalt" style="width: 44px; height: 44px; border: 0; background: none; font-size: 18px">−</button>
+                  <span style="min-width: 24px; text-align: center; font-weight: 700">{{l.qty}}</span>
+                  <button onClick="{{l.inc}}" aria-label="Arttır" style="width: 44px; height: 44px; border: 0; background: none; font-size: 18px">+</button>
+                </div>
+                <span style="min-width: 90px; text-align: right; font-weight: 800; font-size: 17px">{{l.lineText}}</span>
+                <button onClick="{{l.remove}}" aria-label="Kaldır" style="width: 44px; height: 44px; border: 0; background: none; color: #555">
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+                </button>
+              </div>
+            </sc-for>
+          </div>
+          <aside style="flex: 1 1 300px; background: #FFFFFF; border: 1px solid #E6E4DD; border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; justify-content: space-between; font-size: 16px"><span>Ara toplam</span><strong>{{subtotalText}}</strong></div>
+            <sc-if value="{{belowMin}}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <p style="margin: 0; font-size: 14px">Minimum sipariş ₺250. Sepetinize <strong>{{minLeftText}}</strong> daha ekleyin.</p>
+                <div aria-hidden="true" style="height: 8px; background: #EEECE6; border-radius: 999px; overflow: hidden"><div style="{{progressStyle}}"></div></div>
+              </div>
+            </sc-if>
+            <sc-if value="{{shipLeft}}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <p style="margin: 0; font-size: 14px">Kargo bedava için <strong>{{freeLeftText}}</strong> daha ekleyin.</p>
+                <div aria-hidden="true" style="height: 8px; background: #EEECE6; border-radius: 999px; overflow: hidden"><div style="{{freeBarStyle}}"></div></div>
+              </div>
+            </sc-if>
+            <sc-if value="{{freeShip}}" hint-placeholder-val="{{ false }}">
+              <p style="margin: 0; background: #FFF6C7; border-radius: 12px; padding: 10px 12px; font-size: 14px; font-weight: 700">Kargo bedava ✓</p>
+            </sc-if>
+            <button disabled="{{belowMin}}" style="{{checkoutStyle}}">Ödemeye geç</button>
+            <button onClick="{{goCat}}" style="height: 44px; border: 1px solid #D6D3CA; border-radius: 999px; background: #FFFFFF; color: #121212; font-weight: 600">Alışverişe devam et</button>
+          </aside>
+        </div>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  <footer style="background: #121212; color: #F7F6F2">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 40px 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 28px; font-size: 14px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px">magnet<span style="background: #FFE14D; color: #121212; padding: 0 6px; border-radius: 6px; margin-left: 2px">deposu</span></span>
+        <span style="color: #BDB8AD">Şeffaf ve aynalı pleksi magnet, kasnak ve tamamlayıcıları.</span>
+      </div>
+      <nav aria-label="Alt menü kategoriler" style="display: flex; flex-direction: column; gap: 10px"><strong style="color: #FFE14D">Kategoriler</strong><a href="#" style="color: #F7F6F2">Magnet</a><a href="#" style="color: #F7F6F2">Anahtarlık</a><a href="#" style="color: #F7F6F2">Kapı Süsü</a><a href="#" style="color: #F7F6F2">Kasnak</a></nav>
+      <nav aria-label="Alışveriş" style="display: flex; flex-direction: column; gap: 10px"><strong style="color: #FFE14D">Alışveriş</strong><a href="#" style="color: #F7F6F2">Hesabım</a><a href="#" style="color: #F7F6F2">Sepet</a><a href="#" style="color: #F7F6F2">Ödeme</a></nav>
+      <nav aria-label="Yardım" style="display: flex; flex-direction: column; gap: 10px"><strong style="color: #FFE14D">Yardım</strong><a href="#" style="color: #F7F6F2">Garanti ve İade Koşulları</a><a href="#" style="color: #F7F6F2">Gizlilik ve Güvenlik</a><a href="#" style="color: #F7F6F2">Satış Sözleşmesi</a><a href="#" style="color: #F7F6F2">İletişim</a></nav>
+    </div>
+    <div style="border-top: 1px solid #2E2E2E; padding: 16px; text-align: center; font-size: 13px; color: #BDB8AD">© Magnet Deposu · [ADRES] · WhatsApp: [NUMARA]</div>
+  </footer>
+</div>
+</template>
+<script>
+// Minimal renderer for the prototype's template syntax ({{hole}}, <sc-if>, <sc-for>).
+// ponytail: full re-render on every state change; fine for a prototype, use a real framework for production.
+class DCLogic {
+  constructor(props) { this.props = props || {}; this.state = {}; }
+  setState(u) { const patch = typeof u === 'function' ? u(this.state) : u; this.state = Object.assign({}, this.state, patch); schedule(); }
+  forceUpdate() { schedule(); }
+}
+const HOLE = /\{\{\s*([^}]+?)\s*\}\}/g;
+const EVENTS = { onclick: 'click', onchange: 'input', onmouseenter: 'mouseenter', onmouseleave: 'mouseleave', ontouchstart: 'touchstart', onpointerdown: 'pointerdown', onwheel: 'wheel' };
+const SVG_NS = 'http://www.w3.org/2000/svg';
+function lookup(scope, path) {
+  if (path === 'true') return true;
+  if (path === 'false') return false;
+  if (/^-?\d+(\.\d+)?$/.test(path)) return Number(path);
+  return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), scope);
+}
+function interp(str, scope) {
+  const whole = str.match(/^\{\{\s*([^}]+?)\s*\}\}$/);
+  if (whole) return lookup(scope, whole[1]);
+  return str.replace(HOLE, (_, p) => { const v = lookup(scope, p); return v == null ? '' : v; });
+}
+function build(node, scope, out, svg, refs) {
+  if (node.nodeType === 3) { const v = interp(node.nodeValue, scope); out.appendChild(document.createTextNode(v == null ? '' : String(v))); return; }
+  if (node.nodeType !== 1) return;
+  const tag = node.localName;
+  if (tag === 'sc-if') { if (interp(node.getAttribute('value'), scope)) node.childNodes.forEach((c) => build(c, scope, out, svg, refs)); return; }
+  if (tag === 'sc-for') {
+    const list = interp(node.getAttribute('list'), scope) || [];
+    const as = node.getAttribute('as');
+    list.forEach((item, i) => { const sc = Object.create(scope); sc[as] = item; sc.$index = i; node.childNodes.forEach((c) => build(c, sc, out, svg, refs)); });
+    return;
+  }
+  const inSvg = svg || tag === 'svg';
+  const el = inSvg ? document.createElementNS(SVG_NS, tag) : document.createElement(tag);
+  for (const { name, value } of Array.from(node.attributes)) {
+    if (name.startsWith('hint-')) continue;
+    const v = interp(value, scope);
+    if (EVENTS[name]) { if (typeof v === 'function') el.addEventListener(EVENTS[name], v, { passive: name !== 'onclick' && name !== 'onchange' }); continue; }
+    if (name === 'ref') { if (typeof v === 'function') refs.push([v, el, value]); el.setAttribute('data-ref', value); continue; }
+    if (name === 'value' && !inSvg) { el.value = v == null ? '' : v; el.setAttribute('value', v == null ? '' : v); continue; }
+    if (name === 'disabled') { el.disabled = !!v; continue; }
+    if (v === false && !name.startsWith('aria-')) continue;
+    if (v == null) continue;
+    el.setAttribute(name, v === true && !name.startsWith('aria-') ? '' : String(v));
+  }
+  out.appendChild(el);
+  node.childNodes.forEach((c) => build(c, scope, el, inSvg, refs));
+}
+const tpl = document.getElementById('tpl').content;
+const app = document.getElementById('app');
+let comp, pending = false;
+function schedule() { if (pending) return; pending = true; queueMicrotask(() => { pending = false; render(); }); }
+function render() {
+  const a = document.activeElement;
+  const focusId = a && a.id && app.contains(a) ? a.id : null;
+  const sel = focusId && a.selectionStart != null ? [a.selectionStart, a.selectionEnd] : null;
+  const scrolls = {};
+  app.querySelectorAll('[data-ref]').forEach((e) => { scrolls[e.getAttribute('data-ref')] = e.scrollLeft; });
+  const frag = document.createDocumentFragment(); const refs = [];
+  const vals = comp.renderVals();
+  tpl.childNodes.forEach((c) => build(c, vals, frag, false, refs));
+  app.replaceChildren(frag);
+  refs.forEach(([fn, el, key]) => { if (scrolls[key]) el.scrollLeft = scrolls[key]; fn(el); });
+  if (focusId) { const f = document.getElementById(focusId); if (f) { f.focus(); if (sel && f.setSelectionRange) f.setSelectionRange(sel[0], sel[1]); } }
+}
+
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { menuOpen: false, tab: 'magnet', screen: 'home', fam: 'd7', pack: 50, filter: 50, pqty: 1, cart: [], renk: 'altin', kelime: 'tek', ipack: 10, iname: 'Elif', toast: '' };
+  }
+  r10(x) { return Math.round(x / 10) * 10; }
+  tl(n) { return '₺' + n.toLocaleString('tr-TR'); }
+  unit(n, q) { return '₺' + (n / q).toFixed(2).replace('.', ','); }
+  fams() {
+    return [
+      { id: 'd7', name: '7cm Daire Şeffaf Pleksi', base: 235, reg: 360, img: 'img/7451d815bbb987369028ee7b2d9f9b88.webp' },
+      { id: 'd65', name: '6.5cm Daire Şeffaf Pleksi', base: 217, img: 'img/7451d815bbb987369028ee7b2d9f9b88.webp' },
+      { id: 'p75', name: '7x5cm Pencere Magnet', base: 235, img: 'img/eecb36ff538b81a4a364dea67c7d4617.webp' },
+      { id: 'ist', name: 'Düz İstiridye Magnet 7cm', base: 280, img: 'img/d8fb7660be4ff372944671177c17bdc4.webp' },
+      { id: 'ank', name: '7cm Daire Anahtar Delikli', base: 235, img: 'img/b596a57bb467020cd53278d194f0dda8.webp' },
+      { id: 'alt', name: '7x5cm Pencere Altın Çerçeveli', base: 470, img: 'img/9c12c53071fb749a810594db2b82a527.webp' },
+      { id: 'p86', name: '8x6cm Pencere Magnet', base: 250, img: 'img/f14e291c9f928e2eba35a3421895645a.webp' }
+    ];
+  }
+  pk(f, q) {
+    if (q === 50) return { q, price: f.base, reg: f.reg || 0, disc: '' };
+    const reg = f.base * (q / 50);
+    const pct = q === 500 ? 0.95 : 0.9;
+    return { q, price: this.r10(reg * pct), reg, disc: q === 500 ? '%5 paket indirimi' : '%10 paket indirimi' };
+  }
+  title(f, q) { return q === 50 ? f.name + " 50'li Paket" : f.name + ' ' + q + ' Adet'; }
+  isimUnit() { return { tek: 4, cift: 6, uc: 8 }[this.state.kelime]; }
+  isimPk(q) {
+    return { q, price: this.isimUnit() * q, reg: 0, disc: '' };
+  }
+  flash(t) {
+    this.setState({ toast: t });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toast: '' }), 2600);
+  }
+  add(item) {
+    this.setState((st) => {
+      const cart = st.cart.slice();
+      const i = cart.findIndex((c) => c.key === item.key);
+      if (i >= 0) cart[i] = { ...cart[i], qty: cart[i].qty + item.qty };
+      else cart.push(item);
+      return { cart };
+    });
+    this.flash('Sepete eklendi');
+  }
+  setQty(key, d) {
+    const cart = this.state.cart.map((c) => c.key === key ? { ...c, qty: c.qty + d } : c).filter((c) => c.qty > 0);
+    this.setState({ cart });
+  }
+  catList() {
+    return [
+        { name: 'Magnet', count: 91, img: 'img/cd16e906c61ebafe9a3fafb820c93521.webp' },
+        { name: 'Anahtarlık', count: 52, img: 'img/52fd0239e0da340f3269935a74005ebd.webp' },
+        { name: 'Figür', count: 50, img: 'img/88f7a1d4c1d7804b945aeb043323c931.webp' },
+        { name: 'Kapı Süsü', count: 22, img: 'img/40f53eb2f85cf7a85ff4b23f8ed0c410.webp' },
+        { name: 'Aksesuar', count: 21, img: 'img/2b00da588c3d56c97a6d2ecf83270f72.webp' },
+        { name: 'Özel Kurdele Delikli', count: 15, img: 'img/a8b4cc3512f5e79a4f0cd1f7ff39a73c.webp' },
+        { name: 'Anı Panosu', count: 10, img: 'img/ccb08bac5955213b21f6142360a41037.webp' },
+        { name: 'Kasnak', count: 9, img: 'img/cb5292022d2a58707c5d66fd6cb3e427.webp' },
+        { name: 'Kampanyalı Toptan', count: 8, img: 'img/78b1b8d87be1a72f71b08b1bb302e121.webp', q: 1000 },
+        { name: 'Ayraç', count: 6, img: 'img/bf2cbae8b7f86d8c7a058f184fc8ed87.webp' },
+        { name: 'İsim', count: 2, img: 'img/89434c0065a299ab15a826e7e5051c02.webp', isim: true }
+      ];
+  }
+  bestTabs() {
+    return [{"id": "magnet", "label": "Magnet"}, {"id": "anahtarlik", "label": "Anahtarlık"}, {"id": "kapi", "label": "Kapı Süsü"}, {"id": "kasnak", "label": "Kasnak"}, {"id": "figur", "label": "Figür"}, {"id": "isim", "label": "İsim"}, {"id": "aksesuar", "label": "Aksesuar"}, {"id": "ani", "label": "Anı Panosu"}, {"id": "ayrac", "label": "Ayraç"}, {"id": "kurdele", "label": "Kurdele Delikli"}, {"id": "toptan", "label": "Toptan"}];
+  }
+  bestData() {
+    return {"magnet": [{"name": "7cm Daire Şeffaf Pleksi 50'li Paket", "price": 235, "img": "img/7451d815bbb987369028ee7b2d9f9b88.webp", "fam": "d7"}, {"name": "Düz İstiridye Magnet 7cm 50'li Paket", "price": 280, "img": "img/d8fb7660be4ff372944671177c17bdc4.webp", "fam": "ist"}, {"name": "7x5cm Pencere Magnet 50'li Paket", "price": 235, "img": "img/eecb36ff538b81a4a364dea67c7d4617.webp", "fam": "p75"}, {"name": "8x6cm Pencere Magnet 50'li Paket", "price": 250, "img": "img/f14e291c9f928e2eba35a3421895645a.webp", "fam": "p86"}], "anahtarlik": [{"name": "7cm Daire Şeffaf Pleksi Anahtar Delikli 50'li Paket", "price": 235, "img": "img/b596a57bb467020cd53278d194f0dda8.webp", "fam": "ank"}, {"name": "6cm Daire Anahtarlık Delikli 50'li Paket", "price": 200, "img": "img/f9ca0a2190adc3cb9e7d56641322ba38.webp"}, {"name": "Papatya Çizgisiz Delikli 7cm 50'li Paket", "price": 270, "img": "img/a674927e557dc57402068834475c4b2e.webp"}, {"name": "Kalp Anahtarlık Delikli 7cm 50'li Paket", "price": 270, "img": "img/264eb1f4b7ee3ca8bc1dd1ca18645a3c.webp"}], "kapi": [{"name": "30cm Daire Şeffaf Pleksi Tek Delik", "price": 99, "img": "img/af23cecdda067dd86183812713ae5770.webp"}, {"name": "30cm Daire Şeffaf Pleksi Çift Delik", "price": 99, "img": "img/5431d2859133707323bb6520716e7208.webp"}, {"name": "Düz İstiridye Çift Askı Delikli Kapı Süsü (30cm)", "price": 110, "img": "img/e989ba57db064dddc7673e2571d1dbe1.webp"}, {"name": "Düz İstiridye Tek Askı Delikli Kapı Süsü (30cm)", "price": 110, "img": "img/5973edc1811a437892b264c59239551d.webp"}], "kasnak": [{"name": "8cm Daire Kasnak 3mm MDF (7cm Daire Magnete Uygun) 50'li Paket", "price": 235, "img": "img/cb5292022d2a58707c5d66fd6cb3e427.webp"}, {"name": "Ayıcık Kasnak 3mm MDF (7cm Daire Pleksiye Uygun) 50'li Paket", "price": 270, "img": "img/8f174dc50876dff80182a93264651769.webp"}, {"name": "Tavşan Kasnak 3mm MDF (7cm Daire Şeffaf Pleksiye Uygun) 50'li Paket", "price": 270, "img": "img/b42b108823fe2a83d6e6379839c55568.webp"}, {"name": "30cm Daire Pleksiye Uygun Düz Kasnak 3mm MDF", "price": 100, "img": "img/045599115d65f2817a03f1857b35b3ff.webp"}], "figur": [{"name": "No:9 Magnete Uygun Figür 50 Adet", "price": 140, "img": "img/665fe5ef92c923c979d3d6715ee74d43.webp"}, {"name": "No:9 Kapı Süsüne Uygun Figür 1 Adet", "price": 45, "img": "img/b14e9fcbed1b6209c27dc098d08a8d0a.webp"}, {"name": "No:19 Magnete Uygun Figür 50 Adet", "price": 140, "img": "img/3de2a00f896b431021867351bca0973e.webp"}, {"name": "No:19 Kapı Süsüne Uygun Figür 1 Adet", "price": 45, "img": "img/5b8e4f1a026ec761b269e91f3c20a19e.webp"}], "aksesuar": [{"name": "15x3mm Mıknatıs 50'li Paket", "price": 70, "img": "img/884c2900db56343e019f895f571bc0c1.webp"}, {"name": "50 Adet 1.5cm Altın Kalp", "price": 60, "img": "img/2b00da588c3d56c97a6d2ecf83270f72.webp"}, {"name": "50 Adet 1.5cm Altın Yıldız", "price": 60, "img": "img/2b3d09c307980e2ad03a35c045d547c0.webp"}, {"name": "Altın Anahtarlık Zinciri 50'li Paket", "price": 125, "img": "img/8a259c63d60ff6d1f5158db22aecd9ab.webp"}], "ani": [{"name": "Anı Panosu Pencere 20x15cm (pano+2 ayak)", "price": 65, "img": "img/b0afec7835e6ac62e25d703f907827f3.webp"}, {"name": "Anı Panosu Pencere 30x22cm (pano+2 ayak)", "price": 120, "img": "img/e240fdc5ec3f0f4cb9ab60071983e606.webp"}, {"name": "Anı Panosu 20x15cm, Radüs Kenar (pano+2 ayak)", "price": 65, "img": "img/cbb67b87dd87f11ef691655e47386f63.webp"}, {"name": "20x15cm Pencere Anı Panosu Ahşap Ayaklı (pano + stand)", "price": 99, "img": "img/fa71482d76484cbdff3a43984f49360d.webp"}], "ayrac": [{"name": "Ayraç 13x3cm Kurdele Delikli 50'li Paket", "price": 270, "img": "img/5e8d53c80611a9c3a95d334b4c6a7648.webp"}, {"name": "Ayraç Kurdele Delikli 2 15x5cm 50'li Paket", "price": 350, "img": "img/764b87f06c99fbfd07e1e162de59eb10.webp"}, {"name": "Ayraç Kurdele Delikli 4 13x3cm 50'li Paket", "price": 290, "img": "img/6e833290f8f45eb7bafd9e97d39a7db8.webp"}, {"name": "Ayraç Kurdele Delikli 3 13x3cm 50'li Paket", "price": 290, "img": "img/dc5ae693e4c0addcfb2b49341837c86a.webp"}], "kurdele": [{"name": "11cm Daire 2cmX0.3mm Kurdele Delikli 25'li Paket 2 mm şeffaf Pleksi", "price": 325, "img": "img/99564655bc4faa75bace03b1463ecb13.webp"}, {"name": "11cm Kapak Kurdele Delikli Şeffaf 25 Adet", "price": 350, "img": "img/7db2fbc049e93248168581fcaed2e84e.webp"}, {"name": "11cm Daire Kurdele Delikli Altın Ayna 25 Adet", "price": 550, "img": "img/a8b4cc3512f5e79a4f0cd1f7ff39a73c.webp"}, {"name": "11cm Kalp Kurdele Delikli Şeffaf 25 Adet", "price": 350, "img": "img/102f189fdb3addd2f56e36342e535dce.webp"}], "toptan": [{"name": "1000 Adet 7cm Daire Şeffaf Pleksi (Kargo Bedava)", "price": 4200, "img": "img/78b1b8d87be1a72f71b08b1bb302e121.webp"}, {"name": "500 Adet 7cm Daire Şeffaf Pleksi", "price": 2200, "img": "img/78b1b8d87be1a72f71b08b1bb302e121.webp"}, {"name": "500 Adet 7x5cm Pencere Magnet Şeffaf Pleksi", "price": 2200, "img": "img/84907938c86181c432b02c9d8072a41e.webp"}, {"name": "500 Adet 7cm Daire Şeffaf Pleksi Anahtar Delikli", "price": 2200, "img": "img/78b1b8d87be1a72f71b08b1bb302e121.webp"}], "isim": [{"name": "Magnete Uygun İsim (10 adet)", "price": 40, "img": "img/fd640a0abb3702a3baca8400685ea824.webp", "isim": true}, {"name": "Kapı Süsüne Uygun İsim", "price": 50, "img": "img/89434c0065a299ab15a826e7e5051c02.webp", "isim": true}]};
+  }
+  componentDidMount() {
+    const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+    const n = this.catList().length, step = 96;
+    this._ring = setInterval(() => {
+      const el = this.ringEl;
+      if (!el || this._stopped || this._paused || this.state.screen !== 'home' || this.state.menuOpen) return;
+      if (el.scrollLeft >= n * step) el.scrollLeft -= n * step;
+      el.scrollBy({ left: step, behavior: 'smooth' });
+    }, 1000);
+  }
+  componentWillUnmount() { clearTimeout(this._t); clearInterval(this._ring); }
+  renderVals() {
+    const s = this.state;
+    const go = (screen, extra) => () => { this.setState({ screen, menuOpen: false, ...(extra || {}) }); if (typeof window !== 'undefined') window.scrollTo(0, 0); };
+    const chip = (on) => 'height: 44px; padding: 0 16px; border-radius: 999px; font-weight: 600; font-size: 14px; border: 1px solid ' + (on ? '#121212' : '#D6D3CA') + '; background: ' + (on ? '#121212' : '#FFFFFF') + '; color: ' + (on ? '#FFE14D' : '#121212');
+    const tile = (on) => 'min-height: 88px; padding: 10px 8px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-align: center; border: ' + (on ? '2px solid #121212' : '1px solid #D6D3CA') + '; background: ' + (on ? '#FFE14D' : '#FFFFFF') + '; color: #121212';
+    const fams = this.fams();
+    const fam = fams.find((f) => f.id === s.fam) || fams[0];
+
+    const catCards = fams.map((f) => {
+      const p = this.pk(f, s.filter);
+      return {
+        name: f.name, img: f.img, title: this.title(f, s.filter),
+        priceText: this.tl(p.price), regText: this.tl(p.reg), hasReg: p.reg > 0,
+        unitText: this.unit(p.price, p.q), hasDisc: !!p.disc, discText: p.disc,
+        open: go('prod', { fam: f.id, pack: s.filter, pqty: 1 }),
+        add: () => this.add({ key: f.id + '-' + s.filter, name: this.title(f, s.filter), sub: p.disc || 'Standart paket', price: p.price, qty: 1, img: f.img })
+      };
+    });
+    const filters = [50, 500, 1000].map((q) => ({
+      label: q === 50 ? "50'li" : q + "'lü", active: s.filter === q, style: chip(s.filter === q),
+      pick: () => this.setState({ filter: q })
+    }));
+    filters[2].label = "1000'li";
+
+    const cur = this.pk(fam, s.pack);
+    const base50 = this.pk(fam, 50);
+    const save = s.pack === 50 ? 0 : base50.price * (s.pack / 50) - cur.price;
+    const prod = {
+      name: fam.name, img: fam.img, title: this.title(fam, s.pack),
+      priceText: this.tl(cur.price), regText: this.tl(cur.reg), hasReg: cur.reg > 0,
+      unitText: this.unit(cur.price, cur.q), hasDisc: !!cur.disc, discText: cur.disc,
+      hasSave: save > 0, saveText: (s.pack / 50) + " tane 50'li pakete göre " + this.tl(save) + ' tasarruf',
+      qtyText: s.pack + ' adet', lineText: this.tl(cur.price * s.pqty), freeShip: cur.price * s.pqty >= 3000
+    };
+    const packs = [50, 500, 1000].map((q) => {
+      const p = this.pk(fam, q);
+      return {
+        label: q === 50 ? "50'li" : q === 500 ? "500'lü" : "1000'li", priceText: this.tl(p.price), unitText: this.unit(p.price, q),
+        hasDisc: !!p.disc, discText: q === 500 ? '%5 indirim' : '%10 indirim', active: s.pack === q, style: tile(s.pack === q),
+        pick: () => this.setState({ pack: q })
+      };
+    });
+    const extraList = [
+      { id: 'mik', name: "15x3mm Mıknatıs 50'li", price: 70, img: 'img/884c2900db56343e019f895f571bc0c1.webp' },
+      { id: 'kas', name: "8cm Düz Daire Kasnak 50'li", price: 235, img: 'img/cb5292022d2a58707c5d66fd6cb3e427.webp' },
+      { id: 'sus', name: '1.5cm Altın Kalp 50 Adet', price: 60, img: 'img/2b00da588c3d56c97a6d2ecf83270f72.webp' }
+    ];
+    const extras = extraList.map((x) => ({
+      name: x.name, priceText: this.tl(x.price), img: x.img, aria: x.name + ' sepete ekle',
+      add: () => this.add({ key: x.id, name: x.name, sub: 'Tamamlayıcı', price: x.price, qty: 1, img: x.img })
+    }));
+    extras.push({ name: 'Magnete Uygun İsim', priceText: "10'lu ₺40'tan", img: 'img/fd640a0abb3702a3baca8400685ea824.webp', aria: 'İsim sayfasına git', add: go('isim') });
+
+    const renkList = [
+      { id: 'altin', label: 'Altın', c: '#C9A14A', text: '#D8B25A' },
+      { id: 'gumus', label: 'Gümüş', c: '#B8BCC2', text: '#D3D7DC' },
+      { id: 'pembe', label: 'Pembe', c: '#E7A3B6', text: '#F0B3C4' },
+      { id: 'beyaz', label: 'Beyaz MDF', c: '#FFFFFF', text: '#FFFFFF' },
+      { id: 'ham', label: 'Ham MDF', c: '#C49A6C', text: '#CFA678' }
+    ];
+    const rk = renkList.find((r) => r.id === s.renk) || renkList[0];
+    const renkler = renkList.map((r) => ({
+      label: r.label, active: s.renk === r.id, pick: () => this.setState({ renk: r.id }),
+      style: 'height: 44px; padding: 0 14px 0 8px; border-radius: 999px; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; color: #121212; border: ' + (s.renk === r.id ? '2px solid #121212' : '1px solid #D6D3CA') + '; background: #FFFFFF',
+      dot: 'width: 26px; height: 26px; border-radius: 50%; border: 1px solid #BDB9AE; background: ' + r.c
+    }));
+    const kList = [{ id: 'tek', label: 'Tek isim', sub: 'Elif' }, { id: 'cift', label: 'Çift isim', sub: 'Elif & Can' }, { id: 'uc', label: 'Üç isim', sub: 'Elif, Can, Ada' }];
+    const kelimeler = kList.map((k) => ({ label: k.label, sub: k.sub, active: s.kelime === k.id, style: tile(s.kelime === k.id), pick: () => this.setState({ kelime: k.id }) }));
+    const ipacks = [10, 50, 100].map((q) => {
+      const p = this.isimPk(q);
+      return { label: q + ' adet', priceText: this.tl(p.price), hasDisc: !!p.disc, discText: p.disc, active: s.ipack === q, style: tile(s.ipack === q), pick: () => this.setState({ ipack: q }) };
+    });
+    const ip = this.isimPk(s.ipack);
+    const kLabel = (kList.find((k) => k.id === s.kelime) || kList[0]).label;
+    const isimName = 'Magnete Uygun İsim — ' + rk.label + ', ' + kLabel + ', ' + s.ipack + ' adet';
+    const isim = { priceText: this.tl(ip.price), regText: this.tl(ip.reg), hasReg: ip.reg > 0, unitText: this.unit(ip.price, ip.q), qtyText: s.ipack + ' adet' };
+    const nm = (s.iname || '').trim();
+
+    const lines = s.cart.map((c) => ({
+      name: c.name, sub: c.sub, qty: c.qty, img: c.img, lineText: this.tl(c.price * c.qty),
+      inc: () => this.setQty(c.key, 1), dec: () => this.setQty(c.key, -1), remove: () => this.setQty(c.key, -c.qty)
+    }));
+    const subtotal = s.cart.reduce((a, c) => a + c.price * c.qty, 0);
+    const left = Math.max(0, 250 - subtotal);
+    const count = s.cart.reduce((a, c) => a + c.qty, 0);
+
+    const ringBase = this.catList().map((c) => ({ ...c, open: c.isim ? go('isim') : go('cat', { filter: c.q || 50 }) }));
+    const ringItems = ringBase.concat(ringBase);
+    return {
+      isHome: s.screen === 'home', isCat: s.screen === 'cat', isProd: s.screen === 'prod', isIsim: s.screen === 'isim', isCart: s.screen === 'cart', isAcc: s.screen === 'acc',
+      goAcc: go('acc'), goHome: go('home'), goCat: go('cat'), goIsim: go('isim'), goCart: go('cart'),
+      cartCount: count, hasToast: !!s.toast, toastText: s.toast,
+      homeCats: ringBase,
+      menuCats: ringBase, menuOpen: s.menuOpen, menuExpanded: s.menuOpen ? 'true' : 'false',
+      openMenu: () => this.setState({ menuOpen: true }), closeMenu: () => this.setState({ menuOpen: false }),
+      goCat1000: go('cat', { filter: 1000 }),
+      parts: [
+        { n: '01', name: 'Magnet', sub: 'Şeffaf pleksi', img: 'img/7451d815bbb987369028ee7b2d9f9b88.webp', open: go('cat') },
+        { n: '02', name: 'İsim', sub: 'İsim kategorisinde', img: 'img/fd640a0abb3702a3baca8400685ea824.webp', open: go('isim') },
+        { n: '03', name: 'Mıknatıs', sub: 'Aksesuar kategorisinde', img: 'img/884c2900db56343e019f895f571bc0c1.webp', open: go('cat') },
+        { n: '04', name: 'Aksesuar', sub: 'Kalp, yıldız ve diğer süsler', img: 'img/2b00da588c3d56c97a6d2ecf83270f72.webp', open: go('cat') }
+      ],
+      pairs: [
+        { kasnak: "Kalp Kasnak 50'li", kp: 270, magnet: "Kalp Şeffaf Pleksi 7cm 50'li", mp: 250, kImg: 'img/06d3fa1acdc7d4efd8b3c5984e306534.webp', mImg: 'img/8f74ab7f82d6d43f2f5996e8de4e6bf7.webp' },
+        { kasnak: "Yıldız Kasnak 50'li", kp: 270, magnet: "Yıldız Şeffaf Pleksi 50'li", mp: 250, kImg: 'img/7004d01bbb72505639c06e0d8e494871.webp', mImg: 'img/3a34a66da45d434f6b58d7494695303f.webp' },
+        { kasnak: "8cm Düz Daire Kasnak 50'li", kp: 235, magnet: "7cm Daire Şeffaf Pleksi 50'li", mp: 235, kImg: 'img/cb5292022d2a58707c5d66fd6cb3e427.webp', mImg: 'img/7451d815bbb987369028ee7b2d9f9b88.webp' },
+        { kasnak: "Ayıcık Kasnak 50'li", kp: 270, magnet: "7cm Daire Şeffaf Pleksi 50'li", mp: 235, kImg: 'img/8f174dc50876dff80182a93264651769.webp', mImg: 'img/7451d815bbb987369028ee7b2d9f9b88.webp' },
+        { kasnak: "Tavşan Kasnak 50'li", kp: 270, magnet: "7cm Daire Şeffaf Pleksi 50'li", mp: 235, kImg: 'img/b42b108823fe2a83d6e6379839c55568.webp', mImg: 'img/7451d815bbb987369028ee7b2d9f9b88.webp' }
+      ].map((p) => ({ ...p, total: this.tl(p.kp + p.mp), aria: p.kasnak + ' ve ' + p.magnet + ' sepete ekle', add: () => {
+        this.add({ key: 'k-' + p.kasnak, name: p.kasnak, sub: 'Kasnak', price: p.kp, qty: 1, img: p.kImg });
+        this.add({ key: 'm-' + p.magnet, name: p.magnet, sub: 'Uyumlu şeffaf pleksi', price: p.mp, qty: 1, img: p.mImg });
+      } })),
+      finishes: [
+        { name: 'Şeffaf', note: 'Klasik, çift taraflı jelatinli', img: 'img/7451d815bbb987369028ee7b2d9f9b88.webp' },
+        { name: 'Altın çerçeveli', note: 'Şeffaf pleksi, altın kenar', img: 'img/9c12c53071fb749a810594db2b82a527.webp' },
+        { name: 'Gümüş çerçeveli', note: 'Şeffaf pleksi, gümüş kenar', img: 'img/0865724c31c7466be3aa72bce33675e7.webp' },
+        { name: 'Altın ayna', note: 'Tamamı aynalı pleksi', img: 'img/a8b4cc3512f5e79a4f0cd1f7ff39a73c.webp' },
+        { name: 'Gümüş ayna', note: 'Tamamı aynalı pleksi', img: 'img/f4ab1ae13bf63cc9af9bb4d70653d35f.webp' }
+      ],
+      shapes: [
+        { name: 'Daire', img: 'img/7451d815bbb987369028ee7b2d9f9b88.webp' },
+        { name: 'Pencere', img: 'img/eecb36ff538b81a4a364dea67c7d4617.webp' },
+        { name: 'Kalp', img: 'img/8f74ab7f82d6d43f2f5996e8de4e6bf7.webp' },
+        { name: 'Balon', img: 'img/bd7de1cac569b2533c326115cbae0625.webp' },
+        { name: 'İstiridye', img: 'img/d8fb7660be4ff372944671177c17bdc4.webp' },
+        { name: 'Dikdörtgen', img: 'img/3437b9ee50af460960adf200f5526482.webp' },
+        { name: 'Yıldız', img: 'img/3a34a66da45d434f6b58d7494695303f.webp' },
+        { name: 'Papatya', img: 'img/fc3e2f1d001689ce88ba2cc0b0761869.webp' },
+        { name: 'Kelebek', img: 'img/0049d3066baaf667edce554bf507c89d.webp' },
+        { name: 'Bulut', img: 'img/3e2e24d08412affb95cab1fefa1a4835.webp' }
+      ],
+      tabs: this.bestTabs().map((t) => ({ ...t, selected: s.tab === t.id ? 'true' : 'false', pick: () => this.setState({ tab: t.id }),
+        style: 'flex: none; white-space: nowrap; min-height: 40px; border-radius: 999px; padding: 0 14px; font-size: 14px; font-weight: 600; ' + (s.tab === t.id ? 'border: 1px solid #121212; background: #121212; color: #FFE14D' : 'border: 1px solid #D6D3CA; background: #FFFFFF; color: #121212') })),
+      tabAllText: 'Tüm ' + ((this.bestTabs().find((t) => t.id === s.tab) || {}).label || '') + ' ürünleri',
+      tabAll: s.tab === 'isim' ? go('isim') : go('cat', { filter: s.tab === 'toptan' ? 1000 : 50 }),
+      best: (this.bestData()[s.tab] || []).map((p) => ({
+        ...p, priceText: this.tl(p.price), aria: p.name + ' sepete ekle',
+        open: p.fam ? go('prod', { fam: p.fam, pack: 50, pqty: 1 }) : p.isim ? go('isim') : go('cat'),
+        add: p.isim ? go('isim') : () => this.add({ key: 'b-' + p.name, name: p.name, sub: 'Standart paket', price: p.price, qty: 1, img: p.img })
+      })),
+      ring: ringItems,
+      setRingEl: (el) => { this.ringEl = el; },
+      stopRing: () => { this._stopped = true; },
+      pauseRing: () => { this._paused = true; }, playRing: () => { this._paused = false; },
+      filters, catCards, prod, packs, extras, pqty: s.pqty,
+      incQty: () => this.setState({ pqty: s.pqty + 1 }), decQty: () => this.setState({ pqty: Math.max(1, s.pqty - 1) }),
+      addProd: () => this.add({ key: fam.id + '-' + s.pack, name: this.title(fam, s.pack), sub: cur.disc || 'Standart paket', price: cur.price, qty: s.pqty, img: fam.img }),
+      renkler, kelimeler, ipacks, isim, iname: s.iname, renkLabel: rk.label,
+      inameShown: nm || 'İsim',
+      isimPreviewStyle: "font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: clamp(28px, 5vw, 56px); letter-spacing: -0.01em; text-align: center; line-height: 1.05; word-break: break-word; color: " + rk.text,
+      onName: (e) => this.setState({ iname: e.target.value }),
+      addIsim: () => this.add({ key: 'isim-' + s.renk + s.kelime + s.ipack + nm, name: isimName, sub: 'Yazı: ' + (nm || '—'), price: ip.price, qty: 1, img: 'img/fd640a0abb3702a3baca8400685ea824.webp' }),
+      lines, hasItems: lines.length > 0, isEmpty: lines.length === 0,
+      subtotalText: this.tl(subtotal),
+      freeShip: subtotal >= 3000, shipLeft: subtotal >= 250 && subtotal < 3000, freeLeftText: this.tl(Math.max(0, 3000 - subtotal)),
+      freeBarStyle: 'height: 100%; background: #121212; border-radius: 999px; width: ' + Math.min(100, Math.round(subtotal / 30)) + '%', belowMin: left > 0, minLeftText: this.tl(left),
+      progressStyle: 'height: 100%; background: #121212; border-radius: 999px; width: ' + Math.min(100, Math.round(subtotal / 2.5)) + '%',
+      checkoutStyle: 'height: 52px; border: 0; border-radius: 999px; font-weight: 700; font-size: 16px; background: ' + (left > 0 ? '#E6E4DD' : '#121212') + '; color: ' + (left > 0 ? '#6b6b6b' : '#FFE14D') + '; cursor: ' + (left > 0 ? 'not-allowed' : 'pointer')
+    };
+  }
+}
+
+comp = new Component({});
+render();
+if (comp.componentDidMount) comp.componentDidMount();
+</script>
+</body>
+</html>
