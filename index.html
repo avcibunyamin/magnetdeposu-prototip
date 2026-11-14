@@ -699,7 +699,7 @@ class Component extends DCLogic {
       style: 'height: 44px; padding: 0 14px 0 8px; border-radius: 999px; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; color: #121212; border: ' + (s.renk === r.id ? '2px solid #121212' : '1px solid #D6D3CA') + '; background: #FFFFFF',
       dot: 'width: 26px; height: 26px; border-radius: 50%; border: 1px solid #BDB9AE; background: ' + r.c
     }));
-    const kList = [{ id: 'tek', label: 'Tek isim', sub: 'Elif' }, { id: 'cift', label: 'Çift isim', sub: 'Elif & Can' }, { id: 'uc', label: 'Üç isim', sub: 'Elif, Can, Ada' }];
+    const kList = [{ id: 'tek', label: 'Tek isim', sub: 'Derya' }, { id: 'cift', label: 'Çift isim', sub: 'Derya Deniz' }, { id: 'uc', label: 'Üç isim', sub: 'Ayşe Derya Deniz' }];
     const kelimeler = kList.map((k) => ({ label: k.label, sub: k.sub, active: s.kelime === k.id, style: tile(s.kelime === k.id), pick: () => this.setState({ kelime: k.id }) }));
     const ipacks = [10, 50, 100].map((q) => {
       const p = this.isimPk(q);
